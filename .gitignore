@@ -1,12 +1,29 @@
-# Java / Maven
-/target
-*.iml
-.idea/
-
-# Node / Vue
-node_modules/
-dist/
-
-# OS / others
 .DS_Store
+Thumbs.db
 *.log
+*.tmp
+
+backend/**/target/
+backend/**/.classpath
+backend/**/.project
+backend/**/.settings/
+backend/**/.idea/
+backend/**/.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ / Eclipse
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+frontend/**/node_modules/
+frontend/**/dist/
+frontend/**/.vite/
+frontend/**/.env.local
+frontend/**/.env.*.local
+
+.vscode/
+.idea/
+*.swp
