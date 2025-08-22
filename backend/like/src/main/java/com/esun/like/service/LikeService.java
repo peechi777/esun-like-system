@@ -2,6 +2,7 @@ package com.esun.like.service;
 
 import com.esun.like.model.dto.AddOrUpdateLikeReq;
 import com.esun.like.model.dto.UpdateBySnReq;
+import com.esun.like.model.dto.ListLikesResponse;
 import com.esun.like.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,4 +28,10 @@ public class LikeService {
     public void deleteBySn(Long sn) {
         repo.deleteBySn(sn);
     }
+
+
+    public ListLikesResponse listByUser(String userId) {
+        return repo.listByUser(userId);
+    }
 }
+

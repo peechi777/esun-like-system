@@ -2,6 +2,7 @@ package com.esun.like.controller;
 
 import com.esun.like.model.dto.AddOrUpdateLikeReq;
 import com.esun.like.model.dto.UpdateBySnReq;
+import com.esun.like.model.dto.ListLikesResponse;
 import com.esun.like.service.LikeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,10 @@ public class LikeController {
     public ResponseEntity<Void> delete(@PathVariable Long sn) {
         service.deleteBySn(sn);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ListLikesResponse> list(@PathVariable String userId) {
+        return ResponseEntity.ok(service.listByUser(userId));
     }
 }
