@@ -13,5 +13,5 @@ public class UpdateBySnReq {
 
     @NotNull
     @Positive
-    private Integer order name;
+    private Integer ordername;
 }
