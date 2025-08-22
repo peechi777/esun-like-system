@@ -1,0 +1,12 @@
+# Java / Maven
+/target
+*.iml
+.idea/
+
+# Node / Vue
+node_modules/
+dist/
+
+# OS / others
+.DS_Store
+*.log
