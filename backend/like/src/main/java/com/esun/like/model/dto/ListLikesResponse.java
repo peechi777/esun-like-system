@@ -4,7 +4,6 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.List;
 
-orderName。 */
 @Data
 public class ListLikesResponse {
     private List<Item> items;

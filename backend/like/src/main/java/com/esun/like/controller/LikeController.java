@@ -10,7 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/likes")
+@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping(value = "/api/likes", produces = "application/json;charset=UTF-8")
 @RequiredArgsConstructor
 public class LikeController {
 

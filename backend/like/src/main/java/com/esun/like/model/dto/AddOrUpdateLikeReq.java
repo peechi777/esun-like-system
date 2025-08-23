@@ -17,5 +17,5 @@ public class AddOrUpdateLikeReq {
 
     @NotNull
     @Positive
-    private Integer ordername;
+    private Integer orderName;
 }

@@ -23,4 +23,7 @@ public class ProductService {
     public List<ProductDto> list() {
         return repo.list();
     }
+    public ProductRepository.DeleteStatus delete(long productNo) {
+        return repo.delete(productNo);
+    }
 }

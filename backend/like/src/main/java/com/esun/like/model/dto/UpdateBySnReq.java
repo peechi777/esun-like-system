@@ -5,7 +5,6 @@ import jakarta.validation.constraints.*;
 
 @Data
 public class UpdateBySnReq {
-    @NotNull
     private Long sn;
 
     @NotBlank
@@ -13,5 +12,5 @@ public class UpdateBySnReq {
 
     @NotNull
     @Positive
-    private Integer ordername;
+    private Integer orderName;
 }

@@ -1,0 +1,51 @@
+{
+  "info": {
+    "name": "esun-like-system",
+    "_postman_id": "11111111-2222-3333-4444-555555555555",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "金融商品喜好紀錄系統 API 測試集合"
+  },
+  "item": [
+    {
+      "name": "1) 新增/合併 POST /api/likes",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/likes", "host": ["{{baseUrl}}"], "path": ["api", "likes"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"A1236456789\",\n  \"productNo\": 1,\n  \"account\": \"1111999666\",\n  \"orderName\": 2\n}"
+        }
+      }
+    },
+    {
+      "name": "2) 查清單 GET /api/likes/user/{userId}",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/likes/user/A1236456789", "host": ["{{baseUrl}}"], "path": ["api", "likes", "user", "A1236456789"] }
+      }
+    },
+    {
+      "name": "3) 更新 PUT /api/likes/{sn}",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/likes/1", "host": ["{{baseUrl}}"], "path": ["api", "likes", "1"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"account\": \"1111999666\",\n  \"orderName\": 3\n}"
+        }
+      }
+    },
+    {
+      "name": "4) 刪除 DELETE /api/likes/{sn}",
+      "request": {
+        "method": "DELETE",
+        "url": { "raw": "{{baseUrl}}/api/likes/1", "host": ["{{baseUrl}}"], "path": ["api", "likes", "1"] }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ]
+}
