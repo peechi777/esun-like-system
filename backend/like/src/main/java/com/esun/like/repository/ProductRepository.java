@@ -19,6 +19,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ProductRepository {
 
+    public enum DeleteStatus { DELETED, IN_USE, NOT_FOUND }
+
     private final DataSource dataSource;
 
     public long create(AddProductReq req) {
@@ -57,5 +59,23 @@ public class ProductRepository {
 
         Map<String, Object> out = call.execute(Collections.emptyMap());
         return (List<ProductDto>) out.getOrDefault("products", List.of());
+    }
+
+    public DeleteStatus delete(long productNo) {
+        SimpleJdbcCall call = new SimpleJdbcCall(dataSource)
+                .withProcedureName("sp_delete_product")
+                .declareParameters(
+                        new SqlParameter("p_product_no", Types.BIGINT),
+                        new SqlOutParameter("p_deleted", Types.INTEGER),
+                        new SqlOutParameter("p_in_use", Types.INTEGER)
+                );
+
+        Map<String, Object> out = call.execute(Map.of("p_product_no", productNo));
+        int inUse = ((Number) out.getOrDefault("p_in_use", 0)).intValue();
+        int deleted = ((Number) out.getOrDefault("p_deleted", 0)).intValue();
+
+        if (inUse == 1) return DeleteStatus.IN_USE;
+        if (deleted == 1) return DeleteStatus.DELETED;
+        return DeleteStatus.NOT_FOUND;
     }
 }
