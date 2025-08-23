@@ -2,16 +2,16 @@
 import { ref, reactive, onMounted } from 'vue'
 import {
   addOrMergeLike, updateLikeBySn, deleteLikeBySn, listLikesByUser,
-  createProduct, listProducts
+  createProduct, listProducts, saveUser
 } from './api'
 
 const userId = ref('A1236456789')
 
 const items = ref([])
 const summary = reactive({ sumTotalAmount: 0, sumTotalFee: 0 })
+const userInfo = reactive({ userName: '', email: '' })
 
 const products = ref([])
-
 const addForm = reactive({ productNo: null, account: '1111999666', orderName: 1 })
 const editForm = reactive({ sn: null, account: '', orderName: 1 })
 const productForm = reactive({ productName: '', price: null, feeRate: null })
@@ -38,6 +38,11 @@ async function refreshList(){
     items.value = data.items ?? []
     summary.sumTotalAmount = data.sumTotalAmount ?? 0
     summary.sumTotalFee = data.sumTotalFee ?? 0
+
+    if (!userInfo.userName && !userInfo.email && items.value.length) {
+      userInfo.userName = items.value[0]?.userName ?? ''
+      userInfo.email = items.value[0]?.email ?? ''
+    }
   }catch(e){ setMsg('查詢失敗：' + (e?.message||'')) }
   finally{ busy.value = false }
 }
@@ -114,6 +119,24 @@ async function onDelete(sn){
   finally{ busy.value = false }
 }
 
+async function onSaveUser() {
+  if (!userId.value || !userInfo.userName || !userInfo.email || !addForm.account) {
+    setMsg('請填妥：使用者ID / 名稱 / Email / 預設扣款帳號'); return;
+  }
+  busy.value = true
+  try{
+    await saveUser({
+      userId: userId.value,
+      userName: userInfo.userName,
+      email: userInfo.email,
+      account: addForm.account   
+    })
+    setMsg('使用者資料已儲存')
+    await refreshList()
+  }catch(e){ setMsg('儲存使用者失敗：' + (e?.message||'')) }
+  finally{ busy.value = false }
+}
+
 onMounted(async ()=>{
   await loadProducts()
   await refreshList()
@@ -124,11 +147,27 @@ onMounted(async ()=>{
   <main class="container">
     <h1>金融商品喜好紀錄系統（前端示範）</h1>
 
+    <!-- 使用者查詢卡片（可輸入名稱/Email，並可儲存到 DB） -->
     <div class="card">
       <div class="row">
         <label>使用者 ID</label>
         <input v-model="userId" placeholder="A1236456789" />
         <button class="primary" :disabled="busy" @click="refreshList">查詢清單</button>
+      </div>
+
+      <div class="row">
+        <label>使用者名稱</label>
+        <input v-model="userInfo.userName" placeholder="王小明" />
+      </div>
+      <div class="row">
+        <label>聯絡電子信箱</label>
+        <input v-model="userInfo.email" placeholder="test@email.com" />
+      </div>
+      <div class="row">
+        <span class="tip">* 按「儲存使用者資料」，會把 名稱 / Email / 預設扣款帳號 寫入資料庫。</span>
+      </div>
+      <div class="row">
+        <button :disabled="busy" @click="onSaveUser">儲存使用者資料</button>
       </div>
     </div>
 
@@ -211,6 +250,7 @@ onMounted(async ()=>{
               <th>價格</th>
               <th>手續費率</th>
               <th>帳號</th>
+              <th>使用者 Email</th> 
               <th>購買數量(orderName)</th>
               <th>手續費</th>
               <th>總金額</th>
@@ -225,6 +265,7 @@ onMounted(async ()=>{
               <td>{{ row.price }}</td>
               <td>{{ row.feeRate }}</td>
               <td>{{ row.account }}</td>
+              <td class="email">{{ row.email }}</td>
               <td>{{ row.orderName }}</td>
               <td>{{ row.totalFee }}</td>
               <td>{{ row.totalAmount }}</td>
@@ -234,7 +275,7 @@ onMounted(async ()=>{
               </td>
             </tr>
             <tr v-if="!items.length">
-              <td colspan="10" class="empty">目前沒有資料</td>
+              <td colspan="11" class="empty">目前沒有資料</td>
             </tr>
           </tbody>
         </table>
@@ -264,6 +305,7 @@ h2 { font-size: 18px; margin-bottom: 8px; }
 .row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
 .row label { width: 180px; }
 input, select { padding: 6px 8px; border: 1px solid #ccc; border-radius: 8px; }
+.readonly { padding: 6px 0; min-height: 28px; }
 button { padding: 6px 10px; border: 1px solid #999; background: #f5f5f5; border-radius: 8px; cursor: pointer; }
 button:hover { background: #eee; }
 button.ghost { background: transparent; }
@@ -282,6 +324,7 @@ th, td { border-bottom: 1px solid #eee; padding: 8px; text-align: left; }
 
 .tip { color:#666; font-size: 12px; }
 
+
 body { background:#f6f8fa; color:#111; }
 .card { background:#fff; border-color:#e5e7eb; }
 input, select, textarea { background:#fff !important; color:#111 !important; border:1px solid #cbd5e1; border-radius:8px; }
@@ -291,10 +334,14 @@ input:focus, select:focus { outline:2px solid #2563eb; outline-offset:2px; }
 table { color:#111; }
 th { background:#f3f4f6; }
 
+
 button { background:#f5f5f5; border:1px solid #d1d5db; color:#111; }
 button.primary { background:#2563eb; border-color:#2563eb; color:#fff; font-weight:600; }
 button.primary:hover { filter: brightness(0.95); }
 button.danger { background:#ef4444; border-color:#ef4444; color:#fff; }
 button.ghost { background:transparent; color:#111; border-color:#cbd5e1; }
 button:disabled { opacity:.6; cursor:not-allowed; }
+
+.email { word-break: break-all; }
+
 </style>
